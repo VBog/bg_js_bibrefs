@@ -1,0 +1,86 @@
+
+/*****************************************
+	Всплывающие подсказки у ссылок
+******************************************/
+.bg_data_title {
+    position: static; /* Относительное позиционирование */
+	white-space: nowrap;/* Запрет переноса строк ссылки */
+	cursor: pointer;	/* Курсор - указатель */
+}
+.bg_data_tooltip {
+	display: none;
+    position: absolute; /* Абсолютное позиционирование */
+	white-space: normal;/* В подсказке перенос строк разрешен */
+	overflow-y: hidden; 	/* Разрешить при необходимости скроллинг по вертикали */
+	overflow-x: hidden; /* Запретить скроллинг по горизонтали */
+    z-index: 101; 		/* Отображаем подсказку поверх других элементов */
+	left: 0px; 
+	top: 80px; 							/* Вертикальное положение подсказки */
+	width: 240px;						/* Ширина подсказки */
+	max-height: 240px;					/* Максимальная высота подсказки */
+	max-width: 600px;					/* Максимальная ширина подсказки */
+	margin: 0px;						/* Отступ = 0 */
+    padding:  5px 5px 5px 10px; 		/* Поля */
+    border: 1px solid #767676; 			/* Параметры рамки */
+	font-family: sans-serif;			/* Вид шрифта */
+	font-size: 12px; 					/* Размер текста стиха */
+	font-style: normal;					/* Стиль текста */
+	font-weight: normal;				/* Толщина шрифта текста */
+	font-stretch: normal;				/* Начертание шрифта текста */
+    color: #000000; 					/* Цвет текста */
+	text-decoration: none; 				/* Без подчеркивания */
+	text-align: start;					/* Прижать текст влево */
+    background-color: rgba(253,253,255,0.99); 	/* Полупрозрачный цвет фона */
+	box-shadow: 5px 5px 5px -3px rgba(118, 118, 118, 0.9);	/* Тень	*/
+	-webkit-box-shadow: 5px 5px 5px -3px rgba(118, 118, 118, 0.9);
+	-moz-box-shadow: 5px 5px 5px -3px rgba(118, 118, 118, 0.9);
+
+}
+#bg_BG_overlay {
+  background-color: #000;	/* Чёрный фон */
+  height: 100%;				/* Высота максимальна */
+  left: 0;					/* Нулевой отступ слева */
+  opacity: 0.50;			/* Степень прозрачности */
+  position: fixed;			/* Фиксированное положение */
+  top: 0;					/* Нулевой отступ сверху */
+  width: 100%;				/* Ширина максимальна */
+  z-index: 100;				/* Заведомо быть НАД другими элементами */
+}
+
+
+.bg_data_title>a{
+	text-decoration: underline;
+	text-decoration-color: #ccc;
+}
+
+.bibref__title{
+	position:relative;
+	padding-left:22px;
+	margin-bottom:5px;
+}
+
+.bg_expand_button {
+	position:absolute;
+	left:0;
+	top:0;
+	display: block;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	background: url('expand.png') no-repeat;
+	width: 0px;
+	height: 16px;
+	padding-left: 16px;
+}
+
+.bg_data_verses{
+	display:block;
+	width:100%;
+	border-top: 1px solid #ccc;
+	padding-top:3px;
+	overflow-y: auto; 					/* Разрешить при необходимости скроллинг по вертикали */
+	overflow-x: hidden; 				/* Запретить скроллинг по горизонтали */
+	max-height: 188px;
+}
+.bg_cross_refs a {
+	font-size: 80% !important;
+}
