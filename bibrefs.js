@@ -1,6 +1,6 @@
 // Скрипт подсветки ссылок на Библию
 // Автор: Вадим Богайсков
-// Версия 2.0 от 13.06.2021
+// Версия 2.1 от 14.06.2021
 // Требуются:
 //  - Папка bible с json-файлами Библии на разных языках
 //  - Папка img с иконкой expand.png
@@ -12,22 +12,30 @@
    ПАРАМЕТРЫ СКРИПТА
 
 *******************************************************************************/ 
-var bg_bibrefs_options = {
+// Параметры по умолчанию
+var bg_bibrefs_options_default = {
 	replace: false,			// Заменять или нет существующую ссылку, на ссылку на АВ 
 	nodot: false,			// true - разрешить отсутствие точки в сокращении книги; false - запретить
 	collision: false,		// true - восточная нотация; false - западная нотация
 	
-	langs: '&r~a',			// Языки Библии
+	langs: '&r~c',			// Языки Библии
+	get_lang: false,		// Получить языки из URL, если они там заданы
 	popup: true,			// Всплывающее окно с текстом Библии: true - отображать, false - не отображать
-	interpretation:true,	// Ссылки на Толкования true - отображать; false - не отображать
+	interpretation: true,	// Ссылки на Толкования: true - отображать; false - не отображать
 	crossRefs: true,		// Перекрестные ссылки: true - отображать; false - не отображать
 	newStyle: '',			// Стиль для найденных ссылок на Библию
 	log: false				// Журнал Sanitizer
 };
+// Устанавливаем значения параметров по умолчанию, если они не заданы
+if (typeof bg_bibrefs_options == 'undefined') var bg_bibrefs_options = new Object();
+for (const [key, value] of Object.entries(bg_bibrefs_options_default)) {
+	if (!(key in bg_bibrefs_options)) bg_bibrefs_options[key] = value;
+}
+// Получить список языков из URL страницы, если они там заданы и включена соответствующая опция 
 let url_srch_pts = location.search.split('&');
-if (url_srch_pts.length > 1) 
+if (bg_bibrefs_options.get_lang && url_srch_pts.length > 1) {
 	bg_bibrefs_options.langs = '&'+url_srch_pts[1];
-
+}
 /*******************************************************************************/
 
 /*******************************************************************************
