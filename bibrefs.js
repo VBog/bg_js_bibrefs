@@ -1,6 +1,6 @@
 // Скрипт подсветки ссылок на Библию
 // Автор: Вадим Богайсков
-// Версия 2.1 от 14.06.2021
+// Версия 2.2 от 15.06.2021
 // Требуются:
 //  - Папка bible с json-файлами Библии на разных языках
 //  - Папка img с иконкой expand.png
@@ -18,9 +18,10 @@ var bg_bibrefs_options_default = {
 	nodot: false,			// true - разрешить отсутствие точки в сокращении книги; false - запретить
 	collision: false,		// true - восточная нотация; false - западная нотация
 	
-	langs: '&r~c',			// Языки Библии
+	langs: ['r','c'],		// Языки на сайте Библии
 	get_lang: false,		// Получить языки из URL, если они там заданы
 	popup: true,			// Всплывающее окно с текстом Библии: true - отображать, false - не отображать
+	popup_lang: 'r',		// Язык во всплывающем окне
 	interpretation: true,	// Ссылки на Толкования: true - отображать; false - не отображать
 	crossRefs: true,		// Перекрестные ссылки: true - отображать; false - не отображать
 	newStyle: '',			// Стиль для найденных ссылок на Библию
@@ -34,7 +35,7 @@ for (const [key, value] of Object.entries(bg_bibrefs_options_default)) {
 // Получить список языков из URL страницы, если они там заданы и включена соответствующая опция 
 let url_srch_pts = location.search.split('&');
 if (bg_bibrefs_options.get_lang && url_srch_pts.length > 1) {
-	bg_bibrefs_options.langs = '&'+url_srch_pts[1];
+	bg_bibrefs_options.langs = url_srch_pts[1].split('~');
 }
 /*******************************************************************************/
 
@@ -513,6 +514,9 @@ function findAndReplace(searchStr, replaceStr, searchNode) {
     var childNodes = (searchNode || document.body).childNodes;
     var cnLength = childNodes.length;
     excludes = ',html,head,style,title,link,script,object,iframe,textarea,input,button,select,a,';
+
+	if (bg_bibrefs_options.langs) var langs = '&'+bg_bibrefs_options.langs.join('~');
+	else var langs = '';
 	
     while (cnLength--) {
         var currentNode = childNodes[cnLength];
@@ -525,9 +529,9 @@ function findAndReplace(searchStr, replaceStr, searchNode) {
 				
 				if (ref) {
 					html = 
-					'<span class="bg_data_title" data-title="'+ref[0]+'" data-langs="'+bg_bibrefs_options.langs+'"'+' title="'+ref[1]+'"'+'>'+
+					'<span class="bg_data_title" data-title="'+ref[0]+'" data-langs="'+langs+'"'+' title="'+ref[1]+'"'+'>'+
 						'<span class="bg_data_tooltip"></span>'+
-						'<a href="https://azbyka.ru/biblia/?'+ref[0]+bg_bibrefs_options.langs+'" target="_blank">'+found[0]+'</a>'+
+						'<a href="https://azbyka.ru/biblia/?'+ref[0]+langs+'" target="_blank">'+found[0]+'</a>'+
 					'</span>';
 //					currentNode.outerHTML = html;
 					setContent(currentNode, html, true);
@@ -563,9 +567,9 @@ function findAndReplace(searchStr, replaceStr, searchNode) {
 
 
 				return smb+
-				'<span class="bg_data_title" data-title="'+ref[0]+'"'+'" data-langs="'+bg_bibrefs_options.langs+'" title="'+ref[1]+'"'+'>'+
+				'<span class="bg_data_title" data-title="'+ref[0]+'"'+'" data-langs="'+langs+'" title="'+ref[1]+'"'+'>'+
 					'<span class="bg_data_tooltip"></span>'+
-					'<a href="https://azbyka.ru/biblia/?'+ref[0]+bg_bibrefs_options.langs+'"'+refStyle+' target="_blank">'+match+'</a>'+
+					'<a href="https://azbyka.ru/biblia/?'+ref[0]+langs+'"'+refStyle+' target="_blank">'+match+'</a>'+
 				'</span>';
 			} else return match;
 		});
@@ -850,13 +854,14 @@ function bg_bibrefs_start(){
 	bg_bibrefs_tipWidth = parseInt(tooltip.css('width'));
 	bg_bibrefs_tipMaxHeight = parseInt(tooltip.css('max-height'));	
 	bg_bibrefs_tipTop = parseInt(tooltip.css('top'));	
+	var langs = '&'+bg_bibrefs_options.popup_lang;
 	
 	jQuery('span.bg_data_title').each (function(){
 		var el = jQuery(this);
 		var tooltip = el.children('span.bg_data_tooltip');	
 		if (tooltip.css('position')=='fixed') return;
 		var ref = el.attr('data-title');
-		var langs = el.attr('data-langs');
+//		var langs = el.attr('data-langs');
 
 		if (ref != "") {						// Книга задана
 			// Текст Библии
